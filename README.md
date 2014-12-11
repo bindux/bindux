@@ -343,7 +343,7 @@ scope.contents = '<strong>Hello world</strong>';
 Displays:
 
 ```html
-<div n-html="contents">&lt;strong&gt;Hello world&lt;/strong&gt;</div>
+<div n-text="contents">&lt;strong&gt;Hello world&lt;/strong&gt;</div>
 ```
 
 
@@ -393,7 +393,7 @@ HTML
 
 ### Filters
 
-Transforme a value. Example, HELLO to Hello:
+Transform a value. Example, HELLO to Hello:
 
 JS
 ```js
@@ -453,7 +453,7 @@ ux.expr.parsers.something = function(expression, scope, context) {
   return str;
 };
 ```
-Node: `context` is an optional argument to pass context data.
+Note: `context` is an optional argument to pass context data.
 
 
 Then use:
@@ -524,12 +524,16 @@ Emitted on postbooting of a controller.
 
 ##### binders.each.scopes.{scope name}.{property name}.changes
 
-Emitted by `ux.binders.each` when a property (or `array` key) of a scope was changed.
+Emitted by `ux.binders.each` when a property (or an `array` key) of a scope was changed.
 
-Example:
+Example, consider a scope named `app` (`ux.scopes.app`):
 
 Scope object:
 ```js
+// if this code is in a controller,
+// `scope` variable is passed by argument
+var scope = ux.scopes.app;
+
 scope.users = {
   nico: {
     job: 'developer',
@@ -551,6 +555,7 @@ When `scope.users` changes:
 scope.users.nico.avatar = '/img/avatars/tux.png';
 ```
 
+The event emitted is `binders.each.scopes.app.users.changes`
 
 
 ### ux.color
