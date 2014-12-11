@@ -199,7 +199,7 @@ module.exports = (ux) => {
      */
     findOne(selector) {
       this.find(selector);
-      this.nodes = this.nodes.length > 1 ? this.nodes.slice(0, 1) : [];
+      this.nodes = this.nodes.length > 1 ? this.nodes[0] : [];
 
       return this;
     }
@@ -257,7 +257,7 @@ module.exports = (ux) => {
      * @return {Query} Current instance.
      */
     first() {
-      this.nodes = this.nodes ? this.nodes.slice(0, 1) : [];
+      this.nodes = this.nodes ? this.nodes[0] : [];
       return this;
     }
 
