@@ -27,7 +27,7 @@ Bindux.prototype = Object.create(Evemit.prototype, {
 
 ux = new Bindux();
 
-ux.opt    = {
+ux.opt = {
   binder: {
     prefix: 'n-'
   }

@@ -62,9 +62,8 @@ module.exports = (ux) => {
         if (match[2]) {
 
           // attribute value is in $3, $4 or $5.
-            value = match[3] ? match[3]
-            : match[4] ? match[4]
-            : match[5];
+          value = match[3] ? match[3]
+            : match[4] ? match[4] : match[5];
         }
 
         attrs[attr] = value;
