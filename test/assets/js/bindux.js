@@ -644,7 +644,7 @@
 	         */
 	        value: function (selector) {
 	          this.find(selector);
-	          this.nodes = this.nodes.length > 1 ? this.nodes.slice(0, 1) : [];
+	          this.nodes = this.nodes.length > 1 ? this.nodes[0] : [];
 
 	          return this;
 	        }
@@ -717,7 +717,7 @@
 	         * @return {Query} Current instance.
 	         */
 	        value: function () {
-	          this.nodes = this.nodes ? this.nodes.slice(0, 1) : [];
+	          this.nodes = this.nodes ? this.nodes[0] : [];
 	          return this;
 	        }
 	      },
