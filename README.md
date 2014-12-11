@@ -727,45 +727,6 @@ Bindux is unit tested with [Unit.js](http://unitjs.com) and [Mocha](http://unitj
 
 _TODO: There are still things to test._
 
-### Why this project?
-
-Just for personal preferences :)
-
-I mention here, only my personal motivation. I do not pretend to judge something is better than another. The best approach for one, is not necessarily for others. That depends on several criteria specific to each developer.
-Some are willing to sacrifice performance to get some comfort, others prefer over-optimization, even if the maintainability is more complex.
-
-Here are my personal criteria that revolve mainly around:
-
-  * Comfort,
-  * Simplicity
-  * Reusability
-  * Performance.
-
-In all my development, I try to find a harmonious balance to meet these criteria.<br>
-I design my front-end application for it to be smooth and fast on PC and mobile.
-
-Sometimes I use jQuery for some DOM manipulations, sometimes I use Angular for large application.<br>
-
-However, a responsive website (or application) which should be also fluid in the mobile and the tablet,
-the treatments and the lib size must be as small as possible.
-
-Concerning the size:
-  * jQuery2 size is 84kb minified
-  * Angular size is 108kb minified
-
-At first, I wanted to make a data-binding lib + Zepto (a jQuery like), but the size of Zepto minified is 25kb. Only for facilitate DOM manipulation is far too.
-<br>This weight is justified because the approach of jQuery and Zepto is to simplify things by resolving the arguments that can be of different types, provide support for different browsers, ...
-
-I like also this approach. Also, like many developers when I call a function, I know exactly what I want to do. Needless that the function takes on the responsibility to analyze the arguments to call the appropriate subroutine. This at a cost of treatment and extra size.
-
-Ensure the browser support into each libraries / frameworks, Ouch! We are in 2014 there are libraries who do that very well (es5-shim, DOM4, html5shiv, ...). Which in addition provides support for the rest of the code. Coding zen in harmony, even with the old browsers :)
-
-No need to impose some hacks and additional treatments to users who did the smart choice to use a modern browser. His choice to use a recent version of its browser should be rewarded by better performance offered by his browser.
-
-Concerning productivity for a large application, Angular like many full stack framework, facilitates some things and unfortunately complicates others (loss time by making some verbose implementations + looking in the doc).
-
-I prefer to go directly to the essentials ([KISS principle](http://en.wikipedia.org/wiki/KISS_principle)).
-
 
 ## LICENSE
 
