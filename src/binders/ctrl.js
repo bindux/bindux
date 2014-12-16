@@ -59,19 +59,17 @@ module.exports = (ux) => {
       for(var name in ux.ctrls) {
         ctrl = ux.ctrls[name];
 
-        // if not preloaded
-        if(ctrl && ux.is.fn(ctrl)) {
-          continue;
+        // if state is preloaded
+        if(ctrl && ux.is.obj(ctrl) && ctrl.node  && ux.is.fn(ctrl.ctrl)) {
+          ux.emit('ctrls.' + name + '.preBoot');
+
+          ux.ctrls[name].ctrl = new ctrl.ctrl(
+            ux.scopes[name],
+            ctrl.node
+          );
+
+          ux.emit('ctrls.' + name + '.postBoot');
         }
-
-        ux.emit('ctrls.' + name + '.preBoot');
-
-        ux.ctrls[name].ctrl = new ctrl.ctrl(
-          ux.scopes[name],
-          ctrl.node
-        );
-
-        ux.emit('ctrls.' + name + '.postBoot');
       }
     }
   };
