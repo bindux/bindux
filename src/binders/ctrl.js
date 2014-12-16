@@ -53,6 +53,12 @@ module.exports = (ux) => {
     postLoad() {
 
       for(var ctrl in ux.ctrls) {
+
+        // if not preloaded
+        if(ux.ctrls[ctrl] && ux.is.fn(ux.ctrls[ctrl])) {
+          continue;
+        }
+
         ux.emit('ctrls.' + ctrl + '.preBoot');
 
         ux.ctrls[ctrl].ctrl = new ux.ctrls[ctrl].ctrl(
