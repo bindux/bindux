@@ -26,7 +26,7 @@ module.exports = (ux) => {
     },
 
     preLoad(el) {
-      var ctrl, nodes, node, ln;
+      var name, nodes, node, ln;
 
       // resolve controllers
       nodes = this.getNodes(el, true);
@@ -35,38 +35,43 @@ module.exports = (ux) => {
       for(var i = 0; i < ln; i++) {
 
         node = nodes[i];
-        ctrl = node.getAttribute(this.attr);
+        name = node.getAttribute(this.attr);
 
         if(!node.getAttribute('n-scope')) {
-          node.setAttribute('n-scope', ctrl);
+          node.setAttribute('n-scope', name);
         }
 
-        ux.ctrls[ctrl] = {
-          node: node,
-          ctrl: ux.ctrls[ctrl]
-        };
+        // if is not preloaded
+        if(ux.is.fn(ux.ctrls[name])) {
+          ux.ctrls[name] = {
+            node: node,
+            ctrl: ux.ctrls[name]
+          };
 
-        ux.emit('ctrls.' + ctrl + '.preLoaded');
+          ux.emit('ctrls.' + name + '.preLoaded');
+        }
       }
     },
 
     postLoad() {
+      var ctrl;
 
-      for(var ctrl in ux.ctrls) {
+      for(var name in ux.ctrls) {
+        ctrl = ux.ctrls[name];
 
         // if not preloaded
-        if(ux.ctrls[ctrl] && ux.is.fn(ux.ctrls[ctrl])) {
+        if(ctrl && ux.is.fn(ctrl)) {
           continue;
         }
 
-        ux.emit('ctrls.' + ctrl + '.preBoot');
+        ux.emit('ctrls.' + name + '.preBoot');
 
-        ux.ctrls[ctrl].ctrl = new ux.ctrls[ctrl].ctrl(
-          ux.scopes[ctrl],
-          ux.ctrls[ctrl].node
+        ux.ctrls[name].ctrl = new ctrl.ctrl(
+          ux.scopes[name],
+          ctrl.node
         );
 
-        ux.emit('ctrls.' + ctrl + '.postBoot');
+        ux.emit('ctrls.' + name + '.postBoot');
       }
     }
   };
