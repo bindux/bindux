@@ -401,13 +401,6 @@
 /* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
-
-	var _classProps = function (child, staticProps, instanceProps) {
-	  if (staticProps) Object.defineProperties(child, staticProps);
-	  if (instanceProps) Object.defineProperties(child.prototype, instanceProps);
-	};
-
 	/**
 	 * This file is part of Bindux.
 	 *
@@ -531,8 +524,8 @@
 	   *  DOM Query utilities.
 	   *  @class Query
 	   */
-	  var _Query = (function () {
-	    var _Query = function _Query(selector, element) {
+	  var Query = (function () {
+	    var Query = function Query(selector, element) {
 	      var _this = this;
 	      if (element === undefined) element = document;
 	      return (function () {
@@ -562,857 +555,523 @@
 	      })();
 	    };
 
-	    _classProps(_Query, null, {
-	      selectOne: {
-	        writable: true,
+	    Query.prototype.selectOne = function (selector) {
+	      this.nodes = [this.el.querySelector(selector)];
+	      return this;
+	    };
 
+	    Query.prototype.select = function (selector) {
+	      this.nodes = ux.util.toArray(this.el.querySelectorAll(selector));
+	      return this;
+	    };
 
-	        /**
-	         * @return {Query} Current instance.
-	         */
-	        value: function (selector) {
-	          this.nodes = [this.el.querySelector(selector)];
-	          return this;
-	        }
-	      },
-	      select: {
-	        writable: true,
+	    Query.prototype.selectById = function (id) {
+	      this.nodes = [this.el.getElementById(id)];
+	      return this;
+	    };
 
+	    Query.prototype.selectByClass = function (name) {
+	      this.nodes = ux.util.toArray(this.el.getElementsByClassName(name));
+	      return this;
+	    };
 
-	        /**
-	         * @return {Query} Current instance.
-	         */
-	        value: function (selector) {
-	          this.nodes = ux.util.toArray(this.el.querySelectorAll(selector));
-	          return this;
-	        }
-	      },
-	      selectById: {
-	        writable: true,
+	    Query.prototype.selectByTag = function (name) {
+	      this.nodes = ux.util.toArray(this.el.getElementsByTagName(name));
+	      return this;
+	    };
 
+	    Query.prototype.selectByName = function (name) {
+	      this.nodes = ux.util.toArray(this.el.getElementsByName(name));
+	      return this;
+	    };
 
-	        /**
-	         * @return {Query} Current instance.
-	         */
-	        value: function (id) {
-	          this.nodes = [this.el.getElementById(id)];
-	          return this;
-	        }
-	      },
-	      selectByClass: {
-	        writable: true,
+	    Query.prototype.findOne = function (selector) {
+	      this.find(selector);
+	      this.nodes = this.nodes.length > 1 ? this.nodes[0] : [];
 
+	      return this;
+	    };
 
-	        /**
-	         * @return {Query} Current instance.
-	         */
-	        value: function (name) {
-	          this.nodes = ux.util.toArray(this.el.getElementsByClassName(name));
-	          return this;
-	        }
-	      },
-	      selectByTag: {
-	        writable: true,
+	    Query.prototype.find = function (selector) {
+	      this.nodes = this.engine(selector, this.el);
+	      return this;
+	    };
 
+	    Query.prototype.get = function (index) {
+	      if (index === undefined) index = 0;
+	      return this.nodes[index];
+	    };
 
-	        /**
-	         * @return {Query} Current instance.
-	         */
-	        value: function (name) {
-	          this.nodes = ux.util.toArray(this.el.getElementsByTagName(name));
-	          return this;
-	        }
-	      },
-	      selectByName: {
-	        writable: true,
+	    Query.prototype.resolve = function (method, length) {
+	      if (length === undefined) length = 1;
+	      var target, nodes = [], ln = this.nodes.length;
 
+	      for (var i = 0; i < ln; i++) {
+	        target = this.nodes[i][method];
 
-	        /**
-	         * @return {Query} Current instance.
-	         */
-	        value: function (name) {
-	          this.nodes = ux.util.toArray(this.el.getElementsByName(name));
-	          return this;
-	        }
-	      },
-	      findOne: {
-	        writable: true,
+	        while (target) {
+	          if (target && target !== nodes[nodes.length - 1] && target.nodeType === 1) {
+	            nodes.push(target);
 
+	            if (length === -1 || length > 1) {
+	              target = target[method];
 
-	        /**
-	         * @return {Query} Current instance.
-	         */
-	        value: function (selector) {
-	          this.find(selector);
-	          this.nodes = this.nodes.length > 1 ? this.nodes[0] : [];
-
-	          return this;
-	        }
-	      },
-	      find: {
-	        writable: true,
-
-
-	        /**
-	         * @return {Query} Current instance.
-	         */
-	        value: function (selector) {
-	          this.nodes = this.engine(selector, this.el);
-	          return this;
-	        }
-	      },
-	      get: {
-	        writable: true,
-
-
-	        /**
-	         * @return {Node|undefined}
-	         */
-	        value: function (index) {
-	          if (index === undefined) index = 0;
-	          return this.nodes[index];
-	        }
-	      },
-	      resolve: {
-	        writable: true,
-
-
-	        /**
-	         * @return {Query} Current instance.
-	         */
-	        value: function (method, length) {
-	          if (length === undefined) length = 1;
-	          var target, nodes = [], ln = this.nodes.length;
-
-	          for (var i = 0; i < ln; i++) {
-	            target = this.nodes[i][method];
-
-	            while (target) {
-	              if (target && target !== nodes[nodes.length - 1] && target.nodeType === 1) {
-	                nodes.push(target);
-
-	                if (length === -1 || length > 1) {
-	                  target = target[method];
-
-	                  if (length > 1) {
-	                    length--;
-	                  }
-	                } else {
-	                  target = null;
-	                }
+	              if (length > 1) {
+	                length--;
 	              }
+	            } else {
+	              target = null;
 	            }
 	          }
-
-	          this.nodes = nodes;
-
-	          return this;
 	        }
-	      },
-	      first: {
-	        writable: true,
+	      }
 
+	      this.nodes = nodes;
 
-	        /**
-	         * @return {Query} Current instance.
-	         */
-	        value: function () {
-	          this.nodes = this.nodes ? this.nodes[0] : [];
-	          return this;
+	      return this;
+	    };
+
+	    Query.prototype.first = function () {
+	      this.nodes = this.nodes ? this.nodes[0] : [];
+	      return this;
+	    };
+
+	    Query.prototype.last = function () {
+	      this.nodes = this.nodes.length > 1 ? this.nodes.slice(-1) : [];
+	      return this;
+	    };
+
+	    Query.prototype.prev = function () {
+	      return this.resolve("previousElementSibling");
+	    };
+
+	    Query.prototype.prevAll = function () {
+	      return this.resolve("previousElementSibling", -1);
+	    };
+
+	    Query.prototype.next = function () {
+	      return this.resolve("nextElementSibling");
+	    };
+
+	    Query.prototype.nextAll = function () {
+	      return this.resolve("nextElementSibling", -1);
+	    };
+
+	    Query.prototype.children = function () {
+	      var cLn, children, nodes;
+
+	      nodes = [];
+
+	      for (var i = 0, ln = this.nodes.length; i < ln; i++) {
+	        children = this.nodes[i].children;
+
+	        if (children && children.nodeType !== 11) {
+	          cLn = children.length;
+
+	          for (var c = 0; c < cLn; c++) {
+	            nodes.push(children[c]);
+	          }
 	        }
-	      },
-	      last: {
-	        writable: true,
+	      }
 
+	      this.nodes = nodes;
 
-	        /**
-	         * @return {Query} Current instance.
-	         */
-	        value: function () {
-	          this.nodes = this.nodes.length > 1 ? this.nodes.slice(-1) : [];
-	          return this;
-	        }
-	      },
-	      prev: {
-	        writable: true,
+	      return this;
+	    };
 
+	    Query.prototype.parent = function () {
+	      var p;
 
-	        /**
-	         * @return {Query} Current instance.
-	         */
-	        value: function () {
-	          return this.resolve("previousElementSibling");
-	        }
-	      },
-	      prevAll: {
-	        writable: true,
+	      for (var i = 0, ln = this.nodes.length; i < ln; i++) {
+	        p = this.nodes[i].parentNode;
+	        this.nodes[i] = p && p.nodeType !== 11 ? p : null;
+	      }
 
+	      return this;
+	    };
 
-	        /**
-	         * @return {Query} Current instance.
-	         */
-	        value: function () {
-	          return this.resolve("previousElementSibling", -1);
-	        }
-	      },
-	      next: {
-	        writable: true,
+	    Query.prototype.findParent = function (selector) {
+	      return this.findParents(selector, false);
+	    };
 
+	    Query.prototype.findParents = function (selector, all) {
+	      if (all === undefined) all = true;
+	      var firstParent, p, parents = [];
 
-	        /**
-	         * @return {Query} Current instance.
-	         */
-	        value: function () {
-	          return this.resolve("nextElementSibling");
-	        }
-	      },
-	      nextAll: {
-	        writable: true,
+	      if (is.str(selector)) {
+	        selector = ux.dom(selector).nodes;
+	      } else if (!selector) {
+	        firstParent = true;
+	      }
 
+	      for (var i = 0, ln = this.nodes.length; i < ln; i++) {
+	        p = this.nodes[i].parentNode;
 
-	        /**
-	         * @return {Query} Current instance.
-	         */
-	        value: function () {
-	          return this.resolve("nextElementSibling", -1);
-	        }
-	      },
-	      children: {
-	        writable: true,
+	        while (p) {
+	          if (!p || p.nodeType === 11) {
+	            continue;
+	          }
 
+	          if (firstParent) {
+	            selector = null;
+	            firstParent = p;
 
-	        /**
-	         * @return {Query} Current instance.
-	         */
-	        value: function () {
-	          var cLn, children, nodes;
-
-	          nodes = [];
-
-	          for (var i = 0, ln = this.nodes.length; i < ln; i++) {
-	            children = this.nodes[i].children;
-
-	            if (children && children.nodeType !== 11) {
-	              cLn = children.length;
-
-	              for (var c = 0; c < cLn; c++) {
-	                nodes.push(children[c]);
-	              }
+	            if (!firstParent || firstParent.nodeType === 11) {
+	              firstParent = true;
+	              continue;
 	            }
+
+	            selector = [firstParent];
 	          }
 
-	          this.nodes = nodes;
+	          if (selector && parents.indexOf(p) === -1 && selector.indexOf(p) !== -1) {
+	            parents.push(p);
 
-	          return this;
-	        }
-	      },
-	      parent: {
-	        writable: true,
-
-
-	        /**
-	         * Get the first parent of each element in the current set of matched `nodes`.
-	         * @return {Query} Current instance.
-	         */
-	        value: function () {
-	          var p;
-
-	          for (var i = 0, ln = this.nodes.length; i < ln; i++) {
-	            p = this.nodes[i].parentNode;
-	            this.nodes[i] = p && p.nodeType !== 11 ? p : null;
-	          }
-
-	          return this;
-	        }
-	      },
-	      findParent: {
-	        writable: true,
-
-
-	        /**
-	         * Find the fisrt parent of each element in the current set of matched `nodes`,
-	         * optionally filtered by a selector.
-	         *
-	         * @param {string} selector Selector expression to match elements against.
-	         * @return {Query} Current instance.
-	         */
-	        value: function (selector) {
-	          return this.findParents(selector, false);
-	        }
-	      },
-	      findParents: {
-	        writable: true,
-
-
-	        /**
-	         * Find parent(s) of each element in the current set of matched `nodes`,
-	         * optionally filtered by a selector.
-	         *
-	         * @param {string|Element} selector Selector expression to match elements against.
-	         *
-	         * @param {bool}   [all=true] `true` to find all parents,
-	         * false` to find the first parent that match.
-	         *
-	         * @return {Query} Current instance.
-	         */
-	        value: function (selector, all) {
-	          if (all === undefined) all = true;
-	          var firstParent, p, parents = [];
-
-	          if (is.str(selector)) {
-	            selector = ux.dom(selector).nodes;
-	          } else if (!selector) {
-	            firstParent = true;
-	          }
-
-	          for (var i = 0, ln = this.nodes.length; i < ln; i++) {
-	            p = this.nodes[i].parentNode;
-
-	            while (p) {
-	              if (!p || p.nodeType === 11) {
-	                continue;
-	              }
-
-	              if (firstParent) {
-	                selector = null;
-	                firstParent = p;
-
-	                if (!firstParent || firstParent.nodeType === 11) {
-	                  firstParent = true;
-	                  continue;
-	                }
-
-	                selector = [firstParent];
-	              }
-
-	              if (selector && parents.indexOf(p) === -1 && selector.indexOf(p) !== -1) {
-	                parents.push(p);
-
-	                if (!all) {
-	                  break;
-	                }
-	              }
-
-	              p = p.parentNode;
-	            }
-	          }
-
-	          this.nodes = parents;
-
-	          return this;
-	        }
-	      },
-	      each: {
-	        writable: true,
-
-
-	        /**
-	         * @return {Query} Current instance.
-	         */
-	        value: function (fn) {
-	          for (var i = 0, ln = this.nodes.length; i < ln; i++) {
-	            if (fn.call(this.nodes[i], this.el, i) === false) {
+	            if (!all) {
 	              break;
 	            }
 	          }
 
-	          return this;
+	          p = p.parentNode;
 	        }
-	      },
-	      css: {
-	        writable: true,
-	        value: function (name, value) {
-	          var ln;
+	      }
 
-	          if (is.obj(name)) {
-	            for (var prop in name) {
-	              this.css(prop, name[prop]);
-	            }
+	      this.nodes = parents;
 
-	            return this;
-	          }
+	      return this;
+	    };
 
-	          if (is.undef(value)) {
-	            if (this.nodes[0]) {
-	              return this.nodes[0].style[name] || window.getComputedStyle(this.nodes[0], null).getPropertyValue(name);
-	            }
-
-	            return void 0;
-	          } else {
-	            ln = this.nodes.length;
-
-	            if (name === "display") {
-	              for (var i = 0; i < ln; i++) {
-	                dataPriv.set(this.nodes[i], {
-	                  lastDisplay: this.nodes[i].style.display
-	                });
-
-	                this.nodes[i].style.display = value;
-	              }
-
-	              return this;
-	            }
-
-	            for (var i = 0; i < ln; i++) {
-	              this.nodes[i].style[name] = value;
-	            }
-
-	            return this;
-	          }
+	    Query.prototype.each = function (fn) {
+	      for (var i = 0, ln = this.nodes.length; i < ln; i++) {
+	        if (fn.call(this.nodes[i], this.el, i) === false) {
+	          break;
 	        }
-	      },
-	      hasClass: {
-	        writable: true,
+	      }
 
+	      return this;
+	    };
 
-	        /**
-	         * Determine whether any of the matched elements are assigned the given class.
-	         *
-	         * @param {string} name The class name to search for.
-	         * @return {bool} `true` if a node contains the given class,
-	         * otherwise `false`
-	         */
-	        value: function (name) {
-	          for (var i = 0, ln = this.nodes.length; i < ln; i++) {
-	            if (this.nodes[i].classList.contains(name)) {
-	              return true;
-	            }
-	          }
+	    Query.prototype.css = function (name, value) {
+	      var ln;
 
-	          return false;
+	      if (is.obj(name)) {
+	        for (var prop in name) {
+	          this.css(prop, name[prop]);
 	        }
-	      },
-	      addClass: {
-	        writable: true,
 
+	        return this;
+	      }
 
-	        /**
-	         * Add a class to each element in the current set of matched `nodes`.
-	         *
-	         * @param {string} name The class name to add
-	         * @return {Query} Current instance.
-	         */
-	        value: function (name) {
-	          for (var i = 0, ln = this.nodes.length; i < ln; i++) {
-	            this.nodes[i].classList.add(name);
-	          }
-
-	          return this;
+	      if (is.undef(value)) {
+	        if (this.nodes[0]) {
+	          return this.nodes[0].style[name] || window.getComputedStyle(this.nodes[0], null).getPropertyValue(name);
 	        }
-	      },
-	      removeClass: {
-	        writable: true,
 
+	        return void 0;
+	      } else {
+	        ln = this.nodes.length;
 
-	        /**
-	          * Remove a class to each element in the current set of matched `nodes`.
-	          *
-	          * @param {string} name The class name to add
-	          * @return {Query} Current instance.
-	          */
-	        value: function (name) {
-	          for (var i = 0, ln = this.nodes.length; i < ln; i++) {
-	            this.nodes[i].classList.remove(name);
-	          }
-
-	          return this;
-	        }
-	      },
-	      toggleClass: {
-	        writable: true,
-
-
-	        /**
-	         * @return {Query} Current instance.
-	         */
-	        value: function (name) {
-	          for (var i = 0, ln = this.nodes.length; i < ln; i++) {
-	            this.nodes[i].classList.toggle(name);
-	          }
-
-	          return this;
-	        }
-	      },
-	      hide: {
-	        writable: true,
-
-
-	        /**
-	         * Hide each element in the current set of matched `nodes`.
-	         * @return {Query} Current instance.
-	         */
-	        value: function () {
-	          for (var i = 0, ln = this.nodes.length; i < ln; i++) {
-	            if (dataPriv.has(this.nodes[i])) {
-	              dataPriv.get(this.nodes[i]).oldDisplay = this.nodes[i].style.display;
-	            } else {
-	              dataPriv.set(this.nodes[i], {
-	                oldDisplay: this.nodes[i].style.display
-	              });
-	            }
-
-	            this.nodes[i].style.display = "none";
-	          }
-
-	          return this;
-	        }
-	      },
-	      show: {
-	        writable: true,
-
-
-	        /**
-	          * Show each element in the current set of matched `nodes`.
-	          * @return {Query} Current instance.
-	          */
-	        value: function () {
-	          var value;
-
-	          for (var i = 0, ln = this.nodes.length; i < ln; i++) {
-	            value = "";
-
-	            if (dataPriv.has(this.nodes[i])) {
-	              value = dataPriv.get(this.nodes[i]).oldDisplay || value;
-	            }
+	        if (name === "display") {
+	          for (var i = 0; i < ln; i++) {
+	            dataPriv.set(this.nodes[i], {
+	              lastDisplay: this.nodes[i].style.display
+	            });
 
 	            this.nodes[i].style.display = value;
 	          }
 
 	          return this;
 	        }
-	      },
-	      attr: {
-	        writable: true,
-	        value: function (name, value) {
-	          var ln;
 
-	          if (is.undef(value)) {
-	            var list = this.nodes[0].attributes;
-
-	            ln = list.length;
-
-	            if (name) {
-	              for (var i = 0; i < ln; i++) {
-	                if (name == list[i].nodeName) {
-	                  return list[i].value;
-	                }
-	              }
-
-	              return void 0;
-	            }
-
-	            var attrs = {};
-
-	            for (var i = 0; i < ln; i++) {
-	              attrs[list[i].nodeName] = list[i].value;
-	            }
-
-	            return attrs;
-	          }
-
-	          ln = this.nodes.length;
-
-	          for (var i = 0; i < ln; i++) {
-	            this.nodes[i].setAttribute(name, value);
-	          }
-
-	          return this;
+	        for (var i = 0; i < ln; i++) {
+	          this.nodes[i].style[name] = value;
 	        }
-	      },
-	      text: {
-	        writable: true,
-	        value: function (value) {
-	          var txt = "", ln = this.nodes.length;
 
-	          if (is.undef(value)) {
-	            for (var i = 0; i < ln; i++) {
-	              txt += this.nodes[i].textContent;
-	            }
+	        return this;
+	      }
+	    };
 
-	            return txt;
-	          }
-
-	          for (var i = 0; i < ln; i++) {
-	            this.nodes[i].textContent = value;
-	          }
-
-	          return this;
-	        }
-	      },
-	      html: {
-	        writable: true,
-	        value: function (value) {
-	          var html = "", ln = this.nodes.length;
-
-	          if (is.undef(value)) {
-	            for (var i = 0; i < ln; i++) {
-	              html += this.nodes[i].innerHTML;
-	            }
-
-	            return html;
-	          }
-
-	          for (var i = 0; i < ln; i++) {
-	            this.nodes[i].innerHTML = value;
-	          }
-
-	          return this;
-	        }
-	      },
-	      prepend: {
-	        writable: true,
-
-
-	        /**
-	         * @return {Query} Current instance.
-	         */
-	        value: function (value) {
-	          for (var i = 0, ln = this.nodes.length; i < ln; i++) {
-	            this.nodes[i].insertAdjacentHTML("afterbegin", value);
-	          }
-
-	          return this;
-	        }
-	      },
-	      prependText: {
-	        writable: true,
-
-
-	        /**
-	         * @return {Query} Current instance.
-	         */
-	        value: function (value) {
-	          return this.prependChild(document.createTextNode(value));
-	        }
-	      },
-	      prependChild: {
-	        writable: true,
-
-
-	        /**
-	         * @return {Query} Current instance.
-	         */
-	        value: function (node) {
-	          var type;
-
-	          for (var i = 0, ln = this.nodes.length; i < ln; i++) {
-	            type = this.nodes[i].nodeType;
-
-	            if (type === 1 || type === 11 || type === 9) {
-	              this.nodes[i].insertBefore(node.cloneNode(true), this.nodes[i].firstChild);
-	            }
-	          }
-
-	          return this;
-	        }
-	      },
-	      append: {
-	        writable: true,
-
-
-	        /**
-	         * @return {Query} Current instance.
-	         */
-	        value: function (value) {
-	          for (var i = 0, ln = this.nodes.length; i < ln; i++) {
-	            this.nodes[i].insertAdjacentHTML("beforeend", value);
-	          }
-
-	          return this;
-	        }
-	      },
-	      appendText: {
-	        writable: true,
-
-
-	        /**
-	         * @return {Query} Current instance.
-	         */
-	        value: function (value) {
-	          return this.appendChild(document.createTextNode(value));
-	        }
-	      },
-	      appendChild: {
-	        writable: true,
-
-
-	        /**
-	         * @return {Query} Current instance.
-	         */
-	        value: function (node) {
-	          var type;
-
-	          for (var i = 0, ln = this.nodes.length; i < ln; i++) {
-	            type = this.nodes[i].nodeType;
-
-	            if (type === 1 || type === 11 || type === 9) {
-	              this.nodes[i].appendChild(node.cloneNode(true));
-	            }
-	          }
-
-	          return this;
-	        }
-	      },
-	      insertBefore: {
-	        writable: true,
-
-
-	        /**
-	         * @return {Query} Current instance.
-	         */
-	        value: function (value) {
-	          for (var i = 0, ln = this.nodes.length; i < ln; i++) {
-	            this.nodes[i].insertAdjacentHTML("beforebegin", value);
-	          }
-
-	          return this;
-	        }
-	      },
-	      insertAfter: {
-	        writable: true,
-
-
-	        /**
-	         * @return {Query} Current instance.
-	         */
-	        value: function (value) {
-	          for (var i = 0, ln = this.nodes.length; i < ln; i++) {
-	            this.nodes[i].insertAdjacentHTML("afterend", value);
-	          }
-
-	          return this;
-	        }
-	      },
-	      empty: {
-	        writable: true,
-
-
-	        /**
-	         * Empty the selected nodes
-	         *
-	         * @return {Query} Current instance.
-	         */
-	        value: function () {
-	          var range;
-
-	          for (var i = 0, ln = this.nodes.length; i < ln; i++) {
-	            range = document.createRange();
-	            range.selectNodeContents(this.nodes[i]);
-	            range.deleteContents();
-	          }
-
-	          return this;
-	        }
-	      },
-	      remove: {
-	        writable: true,
-
-
-	        /**
-	         * @return {Query} Current instance.
-	         */
-	        value: function () {
-	          for (var i = 0, ln = this.nodes.length; i < ln; i++) {
-	            this.nodes[i].remove();
-	          }
-
-	          return this;
-	        }
-	      },
-	      replaceWith: {
-	        writable: true,
-
-
-	        /**
-	         * Replace all nodes selected by the `node`.
-	         *
-	         * The `node` can be :
-	         *   * an `element` (`object`)
-	         *   * or a `TextNode` (`object`)
-	         *   * or HTML (`string`).
-	         *
-	         * @param {Node|string} node The new node.
-	         *
-	         * @return {Query} The current instance.
-	         */
-	        value: function (node) {
-	          if (is.str(node)) {
-	            node = ux.html.toNode(node);
-	          }
-
-	          for (var i = 0, ln = this.nodes.length; i < ln; i++) {
-	            this.nodes[i].parentNode.replaceChild(node.cloneNode(true), this.nodes[i]);
-	          }
-
-	          return this;
-	        }
-	      },
-	      on: {
-	        writable: true,
-
-
-	        /**
-	         * @return {Query} Current instance.
-	         */
-	        value: function (event, listener, useCapture) {
-	          if (useCapture === undefined) useCapture = false;
-	          var ln = this.nodes.length;
-
-	          if (ln) {
-	            for (var i = 0; i < ln; i++) {
-	              this.nodes[i].addEventListener(event, listener, useCapture);
-	            }
-	          }
-
-	          return this;
-	        }
-	      },
-	      off: {
-	        writable: true,
-
-
-	        /**
-	         * @return {Query} Current instance.
-	         */
-	        value: function (event, listener, useCapture) {
-	          if (useCapture === undefined) useCapture = false;
-	          var ln = this.nodes.length;
-
-	          if (ln) {
-	            for (var i = 0; i < ln; i++) {
-	              this.nodes[i].removeEventListener(event, listener, useCapture);
-	            }
-	          }
-
-	          return this;
-	        }
-	      },
-	      trigger: {
-	        writable: true,
-
-
-	        /**
-	         * @return {Query} Current instance.
-	         */
-	        value: function (event, data) {
-	          var ln = this.nodes.length;
-
-	          if (ln) {
-	            if (is.str(event)) {
-	              event = new Event(event);
-	            }
-
-	            for (var i = 0; i < ln; i++) {
-	              this.nodes[i].dispatchEvent(event, data);
-	            }
-
-	            return this;
-	          }
+	    Query.prototype.hasClass = function (name) {
+	      for (var i = 0, ln = this.nodes.length; i < ln; i++) {
+	        if (this.nodes[i].classList.contains(name)) {
+	          return true;
 	        }
 	      }
-	    });
 
-	    return _Query;
+	      return false;
+	    };
+
+	    Query.prototype.addClass = function (name) {
+	      for (var i = 0, ln = this.nodes.length; i < ln; i++) {
+	        this.nodes[i].classList.add(name);
+	      }
+
+	      return this;
+	    };
+
+	    Query.prototype.removeClass = function (name) {
+	      for (var i = 0, ln = this.nodes.length; i < ln; i++) {
+	        this.nodes[i].classList.remove(name);
+	      }
+
+	      return this;
+	    };
+
+	    Query.prototype.toggleClass = function (name) {
+	      for (var i = 0, ln = this.nodes.length; i < ln; i++) {
+	        this.nodes[i].classList.toggle(name);
+	      }
+
+	      return this;
+	    };
+
+	    Query.prototype.hide = function () {
+	      for (var i = 0, ln = this.nodes.length; i < ln; i++) {
+	        if (dataPriv.has(this.nodes[i])) {
+	          dataPriv.get(this.nodes[i]).oldDisplay = this.nodes[i].style.display;
+	        } else {
+	          dataPriv.set(this.nodes[i], {
+	            oldDisplay: this.nodes[i].style.display
+	          });
+	        }
+
+	        this.nodes[i].style.display = "none";
+	      }
+
+	      return this;
+	    };
+
+	    Query.prototype.show = function () {
+	      var value;
+
+	      for (var i = 0, ln = this.nodes.length; i < ln; i++) {
+	        value = "";
+
+	        if (dataPriv.has(this.nodes[i])) {
+	          value = dataPriv.get(this.nodes[i]).oldDisplay || value;
+	        }
+
+	        this.nodes[i].style.display = value;
+	      }
+
+	      return this;
+	    };
+
+	    Query.prototype.attr = function (name, value) {
+	      var ln;
+
+	      if (is.undef(value)) {
+	        var list = this.nodes[0].attributes;
+
+	        ln = list.length;
+
+	        if (name) {
+	          for (var i = 0; i < ln; i++) {
+	            if (name == list[i].nodeName) {
+	              return list[i].value;
+	            }
+	          }
+
+	          return void 0;
+	        }
+
+	        var attrs = {};
+
+	        for (var i = 0; i < ln; i++) {
+	          attrs[list[i].nodeName] = list[i].value;
+	        }
+
+	        return attrs;
+	      }
+
+	      ln = this.nodes.length;
+
+	      for (var i = 0; i < ln; i++) {
+	        this.nodes[i].setAttribute(name, value);
+	      }
+
+	      return this;
+	    };
+
+	    Query.prototype.text = function (value) {
+	      var txt = "", ln = this.nodes.length;
+
+	      if (is.undef(value)) {
+	        for (var i = 0; i < ln; i++) {
+	          txt += this.nodes[i].textContent;
+	        }
+
+	        return txt;
+	      }
+
+	      for (var i = 0; i < ln; i++) {
+	        this.nodes[i].textContent = value;
+	      }
+
+	      return this;
+	    };
+
+	    Query.prototype.html = function (value) {
+	      var html = "", ln = this.nodes.length;
+
+	      if (is.undef(value)) {
+	        for (var i = 0; i < ln; i++) {
+	          html += this.nodes[i].innerHTML;
+	        }
+
+	        return html;
+	      }
+
+	      for (var i = 0; i < ln; i++) {
+	        this.nodes[i].innerHTML = value;
+	      }
+
+	      return this;
+	    };
+
+	    Query.prototype.prepend = function (value) {
+	      for (var i = 0, ln = this.nodes.length; i < ln; i++) {
+	        this.nodes[i].insertAdjacentHTML("afterbegin", value);
+	      }
+
+	      return this;
+	    };
+
+	    Query.prototype.prependText = function (value) {
+	      return this.prependChild(document.createTextNode(value));
+	    };
+
+	    Query.prototype.prependChild = function (node) {
+	      var type;
+
+	      for (var i = 0, ln = this.nodes.length; i < ln; i++) {
+	        type = this.nodes[i].nodeType;
+
+	        if (type === 1 || type === 11 || type === 9) {
+	          this.nodes[i].insertBefore(node.cloneNode(true), this.nodes[i].firstChild);
+	        }
+	      }
+
+	      return this;
+	    };
+
+	    Query.prototype.append = function (value) {
+	      for (var i = 0, ln = this.nodes.length; i < ln; i++) {
+	        this.nodes[i].insertAdjacentHTML("beforeend", value);
+	      }
+
+	      return this;
+	    };
+
+	    Query.prototype.appendText = function (value) {
+	      return this.appendChild(document.createTextNode(value));
+	    };
+
+	    Query.prototype.appendChild = function (node) {
+	      var type;
+
+	      for (var i = 0, ln = this.nodes.length; i < ln; i++) {
+	        type = this.nodes[i].nodeType;
+
+	        if (type === 1 || type === 11 || type === 9) {
+	          this.nodes[i].appendChild(node.cloneNode(true));
+	        }
+	      }
+
+	      return this;
+	    };
+
+	    Query.prototype.insertBefore = function (value) {
+	      for (var i = 0, ln = this.nodes.length; i < ln; i++) {
+	        this.nodes[i].insertAdjacentHTML("beforebegin", value);
+	      }
+
+	      return this;
+	    };
+
+	    Query.prototype.insertAfter = function (value) {
+	      for (var i = 0, ln = this.nodes.length; i < ln; i++) {
+	        this.nodes[i].insertAdjacentHTML("afterend", value);
+	      }
+
+	      return this;
+	    };
+
+	    Query.prototype.empty = function () {
+	      var range;
+
+	      for (var i = 0, ln = this.nodes.length; i < ln; i++) {
+	        range = document.createRange();
+	        range.selectNodeContents(this.nodes[i]);
+	        range.deleteContents();
+	      }
+
+	      return this;
+	    };
+
+	    Query.prototype.remove = function () {
+	      for (var i = 0, ln = this.nodes.length; i < ln; i++) {
+	        this.nodes[i].remove();
+	      }
+
+	      return this;
+	    };
+
+	    Query.prototype.replaceWith = function (node) {
+	      if (is.str(node)) {
+	        node = ux.html.toNode(node);
+	      }
+
+	      for (var i = 0, ln = this.nodes.length; i < ln; i++) {
+	        this.nodes[i].parentNode.replaceChild(node.cloneNode(true), this.nodes[i]);
+	      }
+
+	      return this;
+	    };
+
+	    Query.prototype.on = function (event, listener, useCapture) {
+	      if (useCapture === undefined) useCapture = false;
+	      var ln = this.nodes.length;
+
+	      if (ln) {
+	        for (var i = 0; i < ln; i++) {
+	          this.nodes[i].addEventListener(event, listener, useCapture);
+	        }
+	      }
+
+	      return this;
+	    };
+
+	    Query.prototype.off = function (event, listener, useCapture) {
+	      if (useCapture === undefined) useCapture = false;
+	      var ln = this.nodes.length;
+
+	      if (ln) {
+	        for (var i = 0; i < ln; i++) {
+	          this.nodes[i].removeEventListener(event, listener, useCapture);
+	        }
+	      }
+
+	      return this;
+	    };
+
+	    Query.prototype.trigger = function (event, data) {
+	      var ln = this.nodes.length;
+
+	      if (ln) {
+	        if (is.str(event)) {
+	          event = new Event(event);
+	        }
+
+	        for (var i = 0; i < ln; i++) {
+	          this.nodes[i].dispatchEvent(event, data);
+	        }
+
+	        return this;
+	      }
+	    };
+
+	    return Query;
 	  })();
 
 
@@ -1422,7 +1081,7 @@
 	    Init
 	  \*------------------------------------------------------------------------*/
 
-	  ux.Query = _Query;
+	  ux.Query = Query;
 
 	  // browser support
 	  if (!document.querySelector) {
@@ -2074,18 +1733,24 @@
 	      }
 
 	      // Function.apply() is a bit slower, so try to do without
-	      if (aLn === 0) {
-	        fn.call(fn._E_ctx);
-	      } else if (aLn === 1) {
-	        fn.call(fn._E_ctx, arg1);
-	      } else if (aLn === 2) {
-	        fn.call(fn._E_ctx, arg1, arg2);
-	      } else if (aLn === 3) {
-	        fn.call(fn._E_ctx, arg1, arg2, arg3);
-	      } else if (aLn === 4) {
-	        fn.call(fn._E_ctx, arg1, arg2, arg3, arg4);
-	      } else {
-	        fn.apply(fn._E_ctx, args);
+	      switch (aLn) {
+	        case 0:
+	          fn.call(fn._E_ctx);
+	          break;
+	        case 1:
+	          fn.call(fn._E_ctx, arg1);
+	          break;
+	        case 2:
+	          fn.call(fn._E_ctx, arg1, arg2);
+	          break;
+	        case 3:
+	          fn.call(fn._E_ctx, arg1, arg2, arg3);
+	          break;
+	        case 4:
+	          fn.call(fn._E_ctx, arg1, arg2, arg3, arg4);
+	          break;
+	        default:
+	          fn.apply(fn._E_ctx, args);
 	      }
 	    }
 
@@ -2522,6 +2187,11 @@
 
 	    postLoad: function () {
 	      for (var ctrl in ux.ctrls) {
+	        // if not preloaded
+	        if (ux.ctrls[ctrl] && ux.is.fn(ux.ctrls[ctrl])) {
+	          continue;
+	        }
+
 	        ux.emit("ctrls." + ctrl + ".preBoot");
 
 	        ux.ctrls[ctrl].ctrl = new ux.ctrls[ctrl].ctrl(ux.scopes[ctrl], ux.ctrls[ctrl].node);
