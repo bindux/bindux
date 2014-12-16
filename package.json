@@ -1,6 +1,6 @@
 {
   "name": "bindux",
-  "version": "0.0.1-alpha",
+  "version": "0.0.1-alpha.2",
   "description": "Data-binding (like Angular, Ember, ...) + templating + DOM manipulation (like jQuery, jqLite, Zepto, ...). Only 7kb minified and gzipped",
   "main": "./src/index.js",
   "keywords": [
