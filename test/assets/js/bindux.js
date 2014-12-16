@@ -2162,7 +2162,7 @@
 	    },
 
 	    preLoad: function (el) {
-	      var ctrl, nodes, node, ln;
+	      var name, nodes, node, ln;
 
 	      // resolve controllers
 	      nodes = this.getNodes(el, true);
@@ -2170,33 +2170,38 @@
 
 	      for (var i = 0; i < ln; i++) {
 	        node = nodes[i];
-	        ctrl = node.getAttribute(this.attr);
+	        name = node.getAttribute(this.attr);
 
 	        if (!node.getAttribute("n-scope")) {
-	          node.setAttribute("n-scope", ctrl);
+	          node.setAttribute("n-scope", name);
 	        }
 
-	        ux.ctrls[ctrl] = {
-	          node: node,
-	          ctrl: ux.ctrls[ctrl]
-	        };
+	        // if is not preloaded
+	        if (ux.is.fn(ux.ctrls[name])) {
+	          ux.ctrls[name] = {
+	            node: node,
+	            ctrl: ux.ctrls[name]
+	          };
 
-	        ux.emit("ctrls." + ctrl + ".preLoaded");
+	          ux.emit("ctrls." + name + ".preLoaded");
+	        }
 	      }
 	    },
 
 	    postLoad: function () {
-	      for (var ctrl in ux.ctrls) {
-	        // if not preloaded
-	        if (ux.ctrls[ctrl] && ux.is.fn(ux.ctrls[ctrl])) {
-	          continue;
+	      var ctrl;
+
+	      for (var name in ux.ctrls) {
+	        ctrl = ux.ctrls[name];
+
+	        // if state is preloaded
+	        if (ctrl && ux.is.obj(ctrl) && ctrl.node && ux.is.fn(ctrl.ctrl)) {
+	          ux.emit("ctrls." + name + ".preBoot");
+
+	          ux.ctrls[name].ctrl = new ctrl.ctrl(ux.scopes[name], ctrl.node);
+
+	          ux.emit("ctrls." + name + ".postBoot");
 	        }
-
-	        ux.emit("ctrls." + ctrl + ".preBoot");
-
-	        ux.ctrls[ctrl].ctrl = new ux.ctrls[ctrl].ctrl(ux.scopes[ctrl], ux.ctrls[ctrl].node);
-
-	        ux.emit("ctrls." + ctrl + ".postBoot");
 	      }
 	    }
 	  };
