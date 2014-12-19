@@ -709,7 +709,7 @@ For make that the old browsers support the modern features you can use polyfills
 
 ## Development of Bindux core
 
-Bindux is developped in ES6 (EcmaScript6) in [src](https://github.com/bindux/bindux/tree/master/test) directory and is compiled to ES5 in the [dist/bindux.min.js](https://raw.githubusercontent.com/bindux/bindux/master/dist/bindux.min.js).
+Bindux is developped in ES6 (EcmaScript6) in [src](https://github.com/bindux/bindux/tree/master/src) directory and compiled to ES5 in the [dist/bindux.min.js](https://raw.githubusercontent.com/bindux/bindux/master/dist/bindux.min.js) file.
 
 Build a minified distributable, in the terminal:
 ```sh
