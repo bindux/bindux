@@ -21,7 +21,7 @@
   "laxbreak": true,
   "predef": [
     "bindux", "ux", "Sizzle",
-    "unitjs", mocha", "describe", "it",
+    "unitjs", "mocha", "describe", "it",
     "before", "after", "beforeEach", "afterEach"
   ]
 }
