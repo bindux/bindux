@@ -153,24 +153,34 @@ module.exports = (ux) => {
      * @return {mixed} The path value.
      */
     propPath(obj, path, val) {
-      var paths, final, p;
+      var paths, final, p, hasVal;
 
-      paths = ux.is.array(path) ? path : path.split('.');
-      final = paths.pop().trim();
+      paths  = Array.isArray(path) ? path : path.split('.');
+      final  = paths.pop().trim();
+      hasVal = (arguments.length === 3);
 
       while(p = paths.shift()) {
 
-        if (obj[p] === void 0) {
-          return obj[p];
+        // if `val` is provided
+        // && `obj` has `p` property (uses `in` way to allow inheritance and undefined value)
+        // && if there are other segments to explore
+        if(hasVal && !(p in obj) && p.length) {
+          obj[p] = {};
+        }
+
+        if(obj[p] === void 0) {
+          break;
         }
 
         obj = obj[p];
       }
 
-      return val ? (obj[final] = val) : obj[final];
+      if(hasVal) {
+        obj[final] = val;
+      }
+
+      return obj[final];
     },
-
-
 
     /**
      * Mark that a method should not be used.
